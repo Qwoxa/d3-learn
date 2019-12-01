@@ -13,7 +13,7 @@ const input = [
 
 function Item(country, population) {
   this.country = country;
-  this.population = population / 1000;
+  this.population = population * 1000;
 }
 
 const data = input.map(i => new Item(...i));

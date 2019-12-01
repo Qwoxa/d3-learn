@@ -5,7 +5,7 @@ const height = +svg.attr("height");
 const render = data => {
   const xValue = d => d.population;
   const yValue = d => d.country;
-  const margin = { top: 20, bottom: 20, right: 20, left: 100 };
+  const margin = { top: 80, bottom: 70, right: 30, left: 180 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
@@ -29,12 +29,30 @@ const render = data => {
       .format(".3s")(number)
       .replace("G", "B");
 
-  const xAxis = d3.axisBottom(xScale).tickFormat(xAxisTickFormat);
+  const xAxis = d3
+    .axisBottom(xScale)
+    .tickFormat(xAxisTickFormat)
+    .tickSize(-innerHeight);
 
-  g.append("g").call(d3.axisLeft(yScale));
   g.append("g")
+    .call(d3.axisLeft(yScale))
+    .selectAll(".domain, .tick line")
+    .remove();
+
+  const xAxisG = g
+    .append("g")
     .call(xAxis)
     .attr("transform", `translate(0, ${innerHeight})`);
+
+  xAxisG.selectAll(".domain").remove();
+
+  xAxisG
+    .append("text")
+    .attr("y", 60)
+    .attr("x", innerWidth / 2)
+    .attr("fill", "black")
+    .attr("class", "axis-label")
+    .text("Population");
 
   g.selectAll("rect")
     .data(data)
@@ -43,6 +61,11 @@ const render = data => {
     .attr("y", d => yScale(yValue(d)))
     .attr("width", d => xScale(xValue(d)))
     .attr("height", yScale.bandwidth());
+
+  g.append("text")
+    .attr("y", -10)
+    .text("Top 10 Most Populous Countries")
+    .attr("class", "title");
 };
 
 render(data);
